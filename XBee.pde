@@ -5,19 +5,20 @@
 #include <NewSoftSerial.h>
 #include <XBee.h>
 
-byte xbeeRX = 2;
-byte xbeeTX = 3;
-byte xbeeRTS = 4; //Pull high to stop the XBee from sending more data to the Arduino through its output line. Must be enabled first.
-byte xbeeCTS = 5; //Is pulled high by the XBee when the XBee input UART line is 17 byte away from full.
-byte xbeeDTR = 6; //Pull high to force sleep mode.
-byte xbeeReset = 7; //Pull low to reset the XBee (Usually after a command session).
+uint8_t xbeeRX = 2;
+uint8_t xbeeTX = 3;
+uint8_t xbeeRTS = 4; //Pull high to stop the XBee from sending more data to the Arduino through its output line. Must be enabled first.
+uint8_t xbeeCTS = 5; //Is pulled high by the XBee when the XBee input UART line is 17 byte away from full.
+uint8_t xbeeDTR = 6; //Pull high to force sleep mode.
+uint8_t xbeeReset = 7; //Pull low to reset the XBee (Usually after a command session).
 
 uint8_t payload[] = {
   "Hey! It's me! Stop Shooting!!"};
 
-//NewSoftSerial xbee(xbeeRX, xbeeTX); //Instantiate a new NewSoftSerial instance for the XBee.
+NewSoftSerial nss(xbeeRX, xbeeTX); //Instantiate a new NewSoftSerial instance for the XBee.
 
 XBee xbee = XBee();
+
 
 // With Series 1 XBees you can use either 16-bit or 64-bit addressing
 
@@ -32,8 +33,10 @@ Tx16Request tx = Tx16Request(0x1111, payload, sizeof(payload));
 TxStatusResponse txStatus = TxStatusResponse();
 
 void setup() {
-  Serial.begin(9600);
-  //xbee.begin(9600);
+  //Serial.begin(9600);
+  xbee.setNss(nss);
+  xbee.begin(9600);
+  //nss.begin(9600);
   delay(15000);
   //Serial.println("Hello World! Starting aerial bombardment!");
 
